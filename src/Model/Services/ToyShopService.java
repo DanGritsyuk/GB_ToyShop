@@ -1,12 +1,12 @@
 package Model.Services;
 
 import Model.ShopService;
-import Model.Store;
-import Model.ToyStore.ToyStore;
+import Model.ToyStore.Store;
+import Model.ToyStore.StoreItem;
 
 public class ToyShopService implements ShopService {
-    private Store store;
+    private Store<StoreItem> store;
     public ToyShopService(){
-        store = new ToyStore();
+        store = new Store<>();
     }
 }
