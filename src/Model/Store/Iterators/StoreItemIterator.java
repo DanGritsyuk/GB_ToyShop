@@ -1,6 +1,6 @@
-package Model.ToyStore.Iterators;
+package Model.Store.Iterators;
 
-import Model.ToyStore.StoreItem;
+import Model.Store.StoreItem;
 
 import java.util.Iterator;
 import java.util.List;

@@ -1,12 +1,16 @@
 package Model.Services;
 
 import Model.ShopService;
-import Model.ToyStore.Store;
-import Model.ToyStore.StoreItem;
+import Model.Store.ChanceMaker.ChanceMaker;
+import Model.Store.ChanceMaker.RafflePrizes;
+import Model.Store.Store;
+import Model.Store.StoreItem;
 
 public class ToyShopService implements ShopService {
     private Store<StoreItem> store;
+    private ChanceMaker raffleToy;
     public ToyShopService(){
-        store = new Store<>();
+        this.store = new Store<>();
+        this.raffleToy = new RafflePrizes();
     }
 }

@@ -1,4 +1,4 @@
-package Model.ToyStore;
+package Model.Store;
 
 public interface StoreItem {
 }

@@ -1,6 +1,6 @@
-package Model.ToyStore;
+package Model.Store;
 
-import Model.ToyStore.Iterators.StoreItemIterator;
+import Model.Store.Iterators.StoreItemIterator;
 
 import java.io.Serializable;
 import java.util.Iterator;
