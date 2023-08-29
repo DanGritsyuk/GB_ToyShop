@@ -5,11 +5,10 @@ import Model.ShopService;
 import Model.ChanceMaker.ChanceMaker;
 import Model.ChanceMaker.RafflePrizes;
 import Model.Store.Store;
-import Model.Store.StoreItem;
 import Model.Store.StoreItems.Toy;
 
 public class ToyShopService implements ShopService {
-    private Store<StoreItem> store;
+    private Store<Toy> store;
     private ChanceMaker raffleToy;
     private IdGenerator idGenerator;
     public ToyShopService(){
@@ -18,7 +17,7 @@ public class ToyShopService implements ShopService {
         this.idGenerator = IdGenerator.getIdGenerator();
     }
 
-    public StoreItem getItemById(int id){
+    public Toy getItemById(int id){
         return this.store.getItemById(id);
     }
 

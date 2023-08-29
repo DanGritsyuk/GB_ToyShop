@@ -7,15 +7,15 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Store<T extends StoreItem> implements Serializable, Iterable<StoreItem>{
-    private List<StoreItem> items;
+public class Store<T extends StoreItem> implements Serializable, Iterable<T>{
+    private List<T> items;
 
     public Store(){
         this.items = new LinkedList<>();
     }
 
-    public StoreItem getItemById(int id) {
-        for (StoreItem item : this.items) {
+    public T getItemById(int id) {
+        for (T item : this.items) {
             if (item.getId() == id) {
                 return item;
             }
@@ -23,7 +23,7 @@ public class Store<T extends StoreItem> implements Serializable, Iterable<StoreI
         return null;
     }
 
-    public boolean addStoreItem(StoreItem item){
+    public boolean addStoreItem(T item){
         return this.items.add(item);
     }
 
@@ -33,7 +33,7 @@ public class Store<T extends StoreItem> implements Serializable, Iterable<StoreI
     }
 
     @Override
-    public Iterator<StoreItem> iterator() {
+    public Iterator<T> iterator() {
         return new StoreItemIterator<>(items);
     }
 }
