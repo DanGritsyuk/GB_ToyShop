@@ -14,6 +14,9 @@ public class Store<T extends StoreItem> implements Serializable, Iterable<T>{
         this.items = new LinkedList<>();
     }
 
+    public List<T> getItems(){
+        return this.items;
+    }
     public T getItemById(int id) {
         for (T item : this.items) {
             if (item.getId() == id) {

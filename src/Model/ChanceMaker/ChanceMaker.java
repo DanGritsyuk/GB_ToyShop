@@ -1,9 +1,8 @@
 package Model.ChanceMaker;
 
-import java.util.List;
-
 public interface ChanceMaker<LotteryItem> {
-    void setStoreItems(List<LotteryItem> items);
+    void setLotteryItem(LotteryItem item);
+    void deleteLotteryItem(LotteryItem item);
 
     LotteryItem getPrize();
 }

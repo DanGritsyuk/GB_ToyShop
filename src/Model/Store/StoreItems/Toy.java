@@ -22,7 +22,7 @@ public class Toy implements StoreItem, LotteryItem {
         return this.id;
     }
     @Override
-    public int getWeight() {
+    public int getChance() {
         return this.weight;
     }
 }
