@@ -1,10 +1,10 @@
 package Model.ChanceMaker;
 import java.util.List;
 
-public class RafflePrizes implements ChanceMaker{
+public class RafflePrizes<T extends LotteryItem> implements ChanceMaker<T>{
     @Override
-    public void setStoreItems(List<LotteryItem> items){}
-    public LotteryItem getPrize(){
+    public void setStoreItems(List<T> items){}
+    public T getPrize(){
         return null;
     }
 }

@@ -9,11 +9,11 @@ import Model.Store.StoreItems.Toy;
 
 public class ToyShopService implements ShopService {
     private Store<Toy> store;
-    private ChanceMaker raffleToy;
+    private ChanceMaker<Toy> raffleToy;
     private IdGenerator idGenerator;
     public ToyShopService(){
         this.store = new Store<>();
-        this.raffleToy = new RafflePrizes();
+        this.raffleToy = new RafflePrizes<>();
         this.idGenerator = IdGenerator.getIdGenerator();
     }
 
@@ -33,7 +33,7 @@ public class ToyShopService implements ShopService {
             throw new RuntimeException("Не удалось удалить игрушку.");
         }
     }
-    public void updateStoreItem(int id, String name, int count, int weight){
+    public void updateToy(int id, String name, int count, int weight){
         String errorMess = "Не удалось внести изменения.";
         var oldItem = this.store.getItemById(id);
         if (oldItem == null){
@@ -48,5 +48,8 @@ public class ToyShopService implements ShopService {
         else {
             throw new RuntimeException(errorMess + " Некорректное удаление старого экзмепляра.");
         }
+    }
+    public Toy raffleOff(){
+        return this.raffleToy.getPrize();
     }
 }
