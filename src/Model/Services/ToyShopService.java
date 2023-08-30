@@ -8,6 +8,9 @@ import Model.ChanceMaker.RafflePrizes;
 import Model.Store.Store;
 import Model.Store.StoreItems.Toy;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class ToyShopService implements ShopService {
     private final String DATA_FOLDER = "Data\\";
     private final String FILE_STORE = "toy_store.data";
@@ -19,21 +22,17 @@ public class ToyShopService implements ShopService {
     private FileHandler<IdGenerator> idsFileHandler;
 
     public ToyShopService(){
-        this.store = new Store<>();
+        this.store = new Store<>("Магазин игрушек");
         this.raffleToy = new RafflePrizes<>();
         this.idGenerator = IdGenerator.getIdGenerator();
+        this.storeFileHandler = new FileHandler<>();
+        this.idsFileHandler = new FileHandler<>();
     }
 
     public Toy getItemById(int id){
         return this.store.getItemById(id);
     }
 
-    public void addToy(String name, int count, int weight){
-        boolean result = this.store.addStoreItem(new Toy(name, idGenerator.GetNewId(), count, weight));
-        if (!result) {
-            throw new RuntimeException("Не удалось добавить игрушку.");
-        }
-    }
     public void deleteToy(int id){
         boolean result = this.store.deleteStoreItem(id);
         if (!result) {
@@ -62,14 +61,14 @@ public class ToyShopService implements ShopService {
     }
 
 
-    public boolean saveTree() {
+    public boolean saveShop() {
         return this.idsFileHandler.save(idGenerator, DATA_FOLDER + ID_GENERATOR_FILE_NAME)
                 && storeFileHandler.save(this.store,
                 DATA_FOLDER + FILE_STORE);
     }
 
-    public boolean loadTree(String treeName) {
-        var store = storeFileHandler.read(DATA_FOLDER + treeName + FILE_STORE);
+    public boolean loadShop() {
+        var store = storeFileHandler.read(DATA_FOLDER + FILE_STORE);
         var idGenerator = idsFileHandler.read(DATA_FOLDER + ID_GENERATOR_FILE_NAME);
         if (store != null && idGenerator != null) {
             this.store = store;
@@ -79,9 +78,61 @@ public class ToyShopService implements ShopService {
         return false;
     }
 
+    @Override
+    public String getShopName() {
+        return store.getName();
+    }
+
+    @Override
+    public List<String> getItemsInfo() {
+        List<String> list = new LinkedList<>();
+        for(Toy toy : this.store){
+            list.add(toy.getId() + " - " + toy.getName() + "; На складе: " + toy.getCount() + "; шанс выпадения: " + toy.getChance());
+        }
+        return list;
+    }
+
+    @Override
+    public void addItem(String name, int count, int chance) {
+        boolean result = this.store.addStoreItem(new Toy(name, idGenerator.GetNewId(), count, chance));
+        if (!result) {
+            throw new RuntimeException("Не удалось добавить игрушку.");
+        }
+    }
+
+    @Override
+    public boolean save(){
+        return saveShop();
+    }
+
+    @Override
+    public boolean load(){
+        return loadShop();
+    }
+
+    @Override
+    public String getPrize(){
+        var lottery = true;
+        while (lottery) {
+            Toy toy = raffleOff();
+            if (toy == null) {return "В магазине нет игрушек!"; }
+            try {
+                updateToy(toy.getId(), toy.getName(), toy.getCount() - 1, toy.getChance());
+                lottery = false;
+                return "Поздравляем! Вы выиграли " + toy.getName() + "! Можете забрать приз.";
+            }
+            catch (Exception ex){
+                return ex.getMessage();
+            }
+        }
+        return "";
+    }
+
     private void updateLotteryChance(){
         for(var toy : this.store.getItems()) {
-            this.raffleToy.setLotteryItem(toy);
+            if(toy.getCount() > 0){
+                this.raffleToy.setLotteryItem(toy);
+            }
         }
     }
 }

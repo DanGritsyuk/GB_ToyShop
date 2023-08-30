@@ -8,10 +8,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Store<T extends StoreItem> implements Serializable, Iterable<T>{
+
+    private String name;
     private List<T> items;
 
-    public Store(){
+    public Store(String name){
+        this.name = name;
         this.items = new LinkedList<>();
+    }
+
+    public String getName(){
+        return this.name;
     }
 
     public List<T> getItems(){

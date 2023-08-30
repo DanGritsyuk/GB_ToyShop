@@ -33,14 +33,16 @@ public class RafflePrizes<T extends LotteryItem> implements ChanceMaker<T>{
             totalChance += prize.getChance();
         }
 
-        Random rand = new Random();
-        int randomNum = rand.nextInt(totalChance);
+        if(totalChance > 0) {
+            Random rand = new Random();
+            int randomNum = rand.nextInt(totalChance);
 
-        int currentChance = 0;
-        for (T prize : this.prizes) {
-            currentChance += prize.getChance();
-            if (randomNum < currentChance) {
-                return prize;
+            int currentChance = 0;
+            for (T prize : this.prizes) {
+                currentChance += prize.getChance();
+                if (randomNum < currentChance) {
+                    return prize;
+                }
             }
         }
         return null;

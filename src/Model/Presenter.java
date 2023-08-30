@@ -1,13 +1,54 @@
 package Model;
-import Model.Services.ToyShopService;
 import View.View;
 
 public class Presenter {
     private ShopService shop;
     private View view;
 
-    public Presenter(View view){
-        this.shop = new ToyShopService();
+    public Presenter(ShopService shop, View view){
+        this.shop = shop;
         this.view = view;
+        this.view.setPresenter(this);
+    }
+
+    public void startup(){
+        shop.load();
+        view.startDraw();
+    }
+
+    public void runCommand(String command){
+        if ((command.equals("exit"))
+                && (this.view.yesNoDialog("Сохранить изменения?"))){
+            shop.save();
+        }
+        if (command.equals("list") || command.equals("l")){
+            var info = this.shop.getItemsInfo();
+            if (info.size() > 0){ view.showItemsInfo(info); }
+            else { this.view.showInfo("В магазине нет товаров."); }
+        }
+        if (command.equals("add") || command.equals("a")){
+            var name = view.askText("название игрушки");
+            var count = view.askNum("количество");
+            var chance = view.askNum("шанс выпадения");
+            try{
+                this.shop.addItem(name, count, chance);
+                this.view.showInfo("Игрушка добавлена.");
+            } catch (Exception ex){
+                this.view.showInfo(ex.getMessage());
+            }
+        }
+        if (command.equals("edit") || command.equals("e")){
+
+        }
+        if (command.equals("delete") || command.equals("d")){
+
+        }
+        if (command.equals("prize") || command.equals("p")){
+            view.showInfo(this.shop.getPrize());
+        }
+    }
+
+    public String getShopTitle(){
+        return shop.getShopName();
     }
 }

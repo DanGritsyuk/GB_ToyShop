@@ -8,13 +8,21 @@ public class Toy implements StoreItem, LotteryItem {
     private String name;
     private int id;
     private int count;
-    private int weight;
+    private int chance;
 
-    public Toy(String name, int id, int count, int weight){
+    public Toy(String name, int id, int count, int chance){
         this.name = name;
         this.id = id;
         this.count = count;
-        this.weight = weight;
+        this.chance = chance;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public int getCount(){
+        return this.count;
     }
 
     @Override
@@ -23,6 +31,6 @@ public class Toy implements StoreItem, LotteryItem {
     }
     @Override
     public int getChance() {
-        return this.weight;
+        return this.chance;
     }
 }
