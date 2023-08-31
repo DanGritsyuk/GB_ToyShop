@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 public class RafflePrizes<T extends LotteryItem> implements ChanceMaker<T>{
-    private List<T> prizes;
+    private final List<T> prizes;
 
     public RafflePrizes(){
         this(new LinkedList<>());
@@ -22,25 +22,22 @@ public class RafflePrizes<T extends LotteryItem> implements ChanceMaker<T>{
     }
 
     @Override
-    public void deleteLotteryItem(T item) {
-        prizes.remove(item);
-    }
+    public void deleteLotteryItem(T item) { prizes.remove(item); }
 
     @Override
     public T getPrize(){
-        int totalChance = 0;
-        for (T prize : this.prizes) {
-            totalChance += prize.getChance();
+        int count = 0;
+        for(var prize : this.prizes){
+            count += prize.getChance();
         }
 
-        if(totalChance > 0) {
-            Random rand = new Random();
-            int randomNum = rand.nextInt(totalChance);
+        Random random = new Random();
+        for (int randomNumsCount = 0; randomNumsCount < 10; randomNumsCount++) {
 
-            int currentChance = 0;
-            for (T prize : this.prizes) {
-                currentChance += prize.getChance();
-                if (randomNum < currentChance) {
+            int index = random.nextInt(count);
+            for (var prize : this.prizes){
+                index -= prize.getChance();
+                if(index < 0) {
                     return prize;
                 }
             }

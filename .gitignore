@@ -56,3 +56,4 @@ replay_pid*
 
 # data files
 Data/
+.PVS-Studio/

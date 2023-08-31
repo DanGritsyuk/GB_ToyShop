@@ -16,10 +16,10 @@ public class ToyShopService implements ShopService {
     private final String FILE_STORE = "toy_store.data";
     private final String ID_GENERATOR_FILE_NAME = "id_gen.data";
     private Store<Toy> store;
-    private ChanceMaker<Toy> raffleToy;
+    private final ChanceMaker<Toy> raffleToy;
     private IdGenerator idGenerator;
-    private FileHandler<Store<Toy>> storeFileHandler;
-    private FileHandler<IdGenerator> idsFileHandler;
+    private final FileHandler<Store<Toy>> storeFileHandler;
+    private final FileHandler<IdGenerator> idsFileHandler;
 
     public ToyShopService(){
         this.store = new Store<>("Магазин игрушек");
@@ -27,10 +27,6 @@ public class ToyShopService implements ShopService {
         this.idGenerator = IdGenerator.getIdGenerator();
         this.storeFileHandler = new FileHandler<>();
         this.idsFileHandler = new FileHandler<>();
-    }
-
-    public Toy getItemById(int id){
-        return this.store.getItemById(id);
     }
 
     public Toy raffleOff(){
@@ -97,6 +93,8 @@ public class ToyShopService implements ShopService {
     }
     @Override
     public void deleteItem(int id){
+        var toy = this.store.getItemById(id);
+        this.raffleToy.deleteLotteryItem(toy);
         boolean result = this.store.deleteStoreItem(id);
         if (!result) {
             throw new RuntimeException("Не удалось удалить игрушку.");
@@ -115,20 +113,25 @@ public class ToyShopService implements ShopService {
 
     @Override
     public String getPrize(){
+        String text = "";
         var lottery = true;
         while (lottery) {
             Toy toy = raffleOff();
             if (toy == null) {return "В магазине нет игрушек!"; }
             try {
+                this.raffleToy.deleteLotteryItem(toy);
                 updateItem(toy.getId(), toy.getName(), toy.getCount() - 1, toy.getChance());
+                toy = this.store.getItemById(toy.getId());
+                if (toy.getCount() > 0) { this.raffleToy.setLotteryItem(toy); }
+                text = "Поздравляем! Вы выиграли " + toy.getName() + "! Можете забрать приз.";
                 lottery = false;
-                return "Поздравляем! Вы выиграли " + toy.getName() + "! Можете забрать приз.";
             }
             catch (Exception ex){
-                return ex.getMessage();
+                text = ex.getMessage();
+                lottery = false;
             }
         }
-        return "";
+        return text;
     }
 
     private void updateLotteryChance(){

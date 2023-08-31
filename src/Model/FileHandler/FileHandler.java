@@ -31,24 +31,11 @@ public class FileHandler<T> implements FileWriter, FileReader<T> {
         }
     }
 
-    public boolean deleteFile(String filePath) {
-        File file = new File(filePath);
-        if (file.exists()) {
-            try {
-                file.delete();
-                return true;
-            } catch (SecurityException e) {
-                return false;
-            }
-        } else {
-            return true;
-        }
-    }
-
     private boolean createFile(String path) {
         File file = new File(path);
-        if (!file.getParentFile().exists()) {
-            return file.getParentFile().mkdirs();
+        File parentFile = file.getParentFile();
+        if (parentFile != null && !parentFile.exists()) {
+            return parentFile.mkdirs();
         }
         return true;
     }
