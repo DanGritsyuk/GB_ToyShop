@@ -33,33 +33,10 @@ public class ToyShopService implements ShopService {
         return this.store.getItemById(id);
     }
 
-    public void deleteToy(int id){
-        boolean result = this.store.deleteStoreItem(id);
-        if (!result) {
-            throw new RuntimeException("Не удалось удалить игрушку.");
-        }
-    }
-    public void updateToy(int id, String name, int count, int weight){
-        String errorMess = "Не удалось внести изменения.";
-        var oldItem = this.store.getItemById(id);
-        if (oldItem == null){
-            throw new RuntimeException(errorMess + " Не найдена заданная игрушка");
-        }
-        if (this.store.deleteStoreItem(oldItem.getId())){
-
-            if (!this.store.addStoreItem(new Toy(name, id, count, weight))){
-                throw new RuntimeException(errorMess + " Новые данные не сохранены.");
-            }
-        }
-        else {
-            throw new RuntimeException(errorMess + " Некорректное удаление старого экзмепляра.");
-        }
-    }
     public Toy raffleOff(){
         updateLotteryChance();
         return this.raffleToy.getPrize();
     }
-
 
     public boolean saveShop() {
         return this.idsFileHandler.save(idGenerator, DATA_FOLDER + ID_GENERATOR_FILE_NAME)
@@ -86,6 +63,7 @@ public class ToyShopService implements ShopService {
     @Override
     public List<String> getItemsInfo() {
         List<String> list = new LinkedList<>();
+        this.store.sortById();
         for(Toy toy : this.store){
             list.add(toy.getId() + " - " + toy.getName() + "; На складе: " + toy.getCount() + "; шанс выпадения: " + toy.getChance());
         }
@@ -97,6 +75,31 @@ public class ToyShopService implements ShopService {
         boolean result = this.store.addStoreItem(new Toy(name, idGenerator.GetNewId(), count, chance));
         if (!result) {
             throw new RuntimeException("Не удалось добавить игрушку.");
+        }
+    }
+
+    @Override
+    public void updateItem(int id, String name, int count, int weight){
+        String errorMess = "Не удалось внести изменения.";
+        var oldItem = this.store.getItemById(id);
+        if (oldItem == null){
+            throw new RuntimeException(errorMess + " Не найдена заданная игрушка");
+        }
+        if (this.store.deleteStoreItem(oldItem.getId())){
+
+            if (!this.store.addStoreItem(new Toy(name, id, count, weight))){
+                throw new RuntimeException(errorMess + " Новые данные не сохранены.");
+            }
+        }
+        else {
+            throw new RuntimeException(errorMess + " Некорректное удаление старого экзмепляра.");
+        }
+    }
+    @Override
+    public void deleteItem(int id){
+        boolean result = this.store.deleteStoreItem(id);
+        if (!result) {
+            throw new RuntimeException("Не удалось удалить игрушку.");
         }
     }
 
@@ -117,7 +120,7 @@ public class ToyShopService implements ShopService {
             Toy toy = raffleOff();
             if (toy == null) {return "В магазине нет игрушек!"; }
             try {
-                updateToy(toy.getId(), toy.getName(), toy.getCount() - 1, toy.getChance());
+                updateItem(toy.getId(), toy.getName(), toy.getCount() - 1, toy.getChance());
                 lottery = false;
                 return "Поздравляем! Вы выиграли " + toy.getName() + "! Можете забрать приз.";
             }

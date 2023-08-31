@@ -31,17 +31,35 @@ public class Presenter {
             var count = view.askNum("количество");
             var chance = view.askNum("шанс выпадения");
             try{
-                this.shop.addItem(name, count, chance);
+                this.shop.addItem(name, Math.abs(count), Math.abs(chance));
                 this.view.showInfo("Игрушка добавлена.");
             } catch (Exception ex){
                 this.view.showInfo(ex.getMessage());
             }
         }
         if (command.equals("edit") || command.equals("e")){
-
+            var id = view.askNum("идентификатор");
+            var name = view.askText("новое название");
+            var count = view.askNum("новое количество");
+            var chance = view.askNum("новый шанс выпадения");
+            try{
+                this.shop.updateItem(id, name, Math.abs(count), Math.abs(chance));
+                this.view.showInfo("данные " + name + " изменены.");
+            }
+            catch (Exception ex){
+                this.view.showInfo(ex.getMessage());
+            }
         }
         if (command.equals("delete") || command.equals("d")){
+            var id = view.askNum("идентификатор");
 
+            try{
+                this.shop.deleteItem(id);
+                this.view.showInfo("товар с кодом " + id + " удален");
+            }
+            catch (Exception ex){
+                this.view.showInfo(ex.getMessage());
+            }
         }
         if (command.equals("prize") || command.equals("p")){
             view.showInfo(this.shop.getPrize());
