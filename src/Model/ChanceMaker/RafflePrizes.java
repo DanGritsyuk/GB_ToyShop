@@ -28,7 +28,7 @@ public class RafflePrizes<T extends LotteryItem> implements ChanceMaker<T>{
     public T getPrize(){
         int count = 0;
         for(var prize : this.prizes){
-            count += prize.getChance();
+            count += calculateChance(prize.getChance());
         }
 
         Random random = new Random();
@@ -36,12 +36,16 @@ public class RafflePrizes<T extends LotteryItem> implements ChanceMaker<T>{
 
             int index = random.nextInt(count);
             for (var prize : this.prizes){
-                index -= prize.getChance();
+                index -= calculateChance(prize.getChance());
                 if(index < 0) {
                     return prize;
                 }
             }
         }
         return null;
+    }
+
+    private int calculateChance(int chance){
+        return Math.min(chance, 100);
     }
 }
