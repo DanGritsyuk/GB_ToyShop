@@ -31,7 +31,18 @@ public class ToyShopService implements ShopService {
 
     public Toy raffleOff(){
         updateLotteryChance();
-        return this.raffleToy.getPrize();
+        if (this.raffleToy.startPrizeDraw()) {
+            Toy toy = this.raffleToy.getPrize();
+            if (toy != null){
+                return toy;
+            }
+            else{
+                throw new RuntimeException("Приз был утерян.");
+            }
+        }
+        else {
+            return null;
+        }
     }
 
     public boolean saveShop() {
@@ -116,9 +127,9 @@ public class ToyShopService implements ShopService {
         String text = "";
         var lottery = true;
         while (lottery) {
-            Toy toy = raffleOff();
-            if (toy == null) {return "В магазине нет игрушек!"; }
             try {
+                Toy toy = raffleOff();
+                if (toy == null) {return "В магазине нет игрушек!"; }
                 this.raffleToy.deleteLotteryItem(toy);
                 updateItem(toy.getId(), toy.getName(), toy.getCount() - 1, toy.getChance());
                 toy = this.store.getItemById(toy.getId());
